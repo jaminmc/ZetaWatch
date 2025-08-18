@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -30,9 +30,9 @@
 		703811A42312C833002C760A /* ServiceManagement.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 703811A32312C833002C760A /* ServiceManagement.framework */; };
 		703B176C262C6B0F002C760A /* libnvpair.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 703B1752262C6A31002C760A /* libnvpair.3.dylib */; };
 		703B176D262C6B0F002C760A /* libzfs_core.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 703B1751262C6A31002C760A /* libzfs_core.3.dylib */; };
-		703B176E262C6B0F002C760A /* libzfs.4.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 703B1750262C6A31002C760A /* libzfs.4.dylib */; };
-		70552BC62336AFD8002C760A /* Sparkle.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 70552BC42336AEB2002C760A /* Sparkle.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		70552BC82336B196002C760A /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 70552BC42336AEB2002C760A /* Sparkle.framework */; };
+		703B176E262C6B0F002C760A /* libzfs.6.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 703B1750262C6A31002C760A /* libzfs.6.dylib */; };
+
+
 		7068A94623ACFB0A002C760A /* NewVol.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7068A94423ACFB0A002C760A /* NewVol.xib */; };
 		7068A94823ACFBB1002C760A /* SizeTransformer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7068A94723ACFBB1002C760A /* SizeTransformer.mm */; };
 		70703F3722AD7633002C760A /* DiskArbitration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 70703F3622AD7633002C760A /* DiskArbitration.framework */; };
@@ -40,16 +40,16 @@
 		7075BE36236E09DF002C760A /* ZetaLoginItemHelper.app in CopyFiles */ = {isa = PBXBuildFile; fileRef = 70E4A21D236DF7D6002C760A /* ZetaLoginItemHelper.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		708112B726D993F3002C760A /* libnvpair.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 703B1752262C6A31002C760A /* libnvpair.3.dylib */; };
 		708112B826D993F4002C760A /* libzfs_core.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 703B1751262C6A31002C760A /* libzfs_core.3.dylib */; };
-		708112B926D993F4002C760A /* libzfs.4.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 703B1750262C6A31002C760A /* libzfs.4.dylib */; };
-		708112BB26D993F4002C760A /* libzpool.5.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 708112BA26D993F4002C760A /* libzpool.5.dylib */; };
+		708112B926D993F4002C760A /* libzfs.6.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 703B1750262C6A31002C760A /* libzfs.6.dylib */; };
+		708112BB26D993F4002C760A /* libzpool.6.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 708112BA26D993F4002C760A /* libzpool.6.dylib */; };
 		708112C026D99413002C760A /* libnvpair.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 703B1752262C6A31002C760A /* libnvpair.3.dylib */; };
 		708112C126D99413002C760A /* libzfs_core.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 703B1751262C6A31002C760A /* libzfs_core.3.dylib */; };
-		708112C226D99413002C760A /* libzfs.4.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 703B1750262C6A31002C760A /* libzfs.4.dylib */; };
-		708112C326D99413002C760A /* libzpool.5.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 708112BA26D993F4002C760A /* libzpool.5.dylib */; };
-		708112CC26D99470002C760A /* libzpool.5.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 708112BA26D993F4002C760A /* libzpool.5.dylib */; };
+		708112C226D99413002C760A /* libzfs.6.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 703B1750262C6A31002C760A /* libzfs.6.dylib */; };
+		708112C326D99413002C760A /* libzpool.6.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 708112BA26D993F4002C760A /* libzpool.6.dylib */; };
+		708112CC26D99470002C760A /* libzpool.6.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 708112BA26D993F4002C760A /* libzpool.6.dylib */; };
 		708112CD26D99473002C760A /* libnvpair.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 703B1752262C6A31002C760A /* libnvpair.3.dylib */; };
 		708112CE26D99475002C760A /* libzfs_core.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 703B1751262C6A31002C760A /* libzfs_core.3.dylib */; };
-		708112CF26D99479002C760A /* libzfs.4.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 703B1750262C6A31002C760A /* libzfs.4.dylib */; };
+		708112CF26D99479002C760A /* libzfs.6.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 703B1750262C6A31002C760A /* libzfs.6.dylib */; };
 		7099FB4523A575F9002C760A /* ZetaBookmarkMenu.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7099FB4323A575F8002C760A /* ZetaBookmarkMenu.mm */; };
 		709C1CAD1C354F8B00929DAE /* ZetaPoolWatcher.mm in Sources */ = {isa = PBXBuildFile; fileRef = 709C1CAC1C354F8B00929DAE /* ZetaPoolWatcher.mm */; };
 		70AE5AB222A3DBAA002C760A /* ZetaImportMenu.mm in Sources */ = {isa = PBXBuildFile; fileRef = 70AE5AB122A3DBAA002C760A /* ZetaImportMenu.mm */; };
@@ -117,7 +117,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				70552BC62336AFD8002C760A /* Sparkle.framework in Embed Frameworks */,
+
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -162,16 +162,16 @@
 		703811A02312A2CB002C760A /* ZetaNotificationCenter.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ZetaNotificationCenter.mm; sourceTree = "<group>"; };
 		703811A22312A2E6002C760A /* ZetaNotificationCenter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ZetaNotificationCenter.h; sourceTree = "<group>"; };
 		703811A32312C833002C760A /* ServiceManagement.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ServiceManagement.framework; path = System/Library/Frameworks/ServiceManagement.framework; sourceTree = SDKROOT; };
-		703B1750262C6A31002C760A /* libzfs.4.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libzfs.4.dylib; path = ../../../../usr/local/zfs/lib/libzfs.4.dylib; sourceTree = "<group>"; };
+		703B1750262C6A31002C760A /* libzfs.6.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libzfs.6.dylib; path = ../../../../usr/local/zfs/lib/libzfs.6.dylib; sourceTree = "<group>"; };
 		703B1751262C6A31002C760A /* libzfs_core.3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libzfs_core.3.dylib; path = ../../../../usr/local/zfs/lib/libzfs_core.3.dylib; sourceTree = "<group>"; };
 		703B1752262C6A31002C760A /* libnvpair.3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libnvpair.3.dylib; path = ../../../../usr/local/zfs/lib/libnvpair.3.dylib; sourceTree = "<group>"; };
-		70552BC42336AEB2002C760A /* Sparkle.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Sparkle.framework; path = ThirdParty/Sparkle/DerivedData/Sparkle/Build/Products/Release/Sparkle.framework; sourceTree = "<group>"; };
+
 		7068A94523ACFB0A002C760A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/NewVol.xib; sourceTree = "<group>"; };
 		7068A94723ACFBB1002C760A /* SizeTransformer.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = SizeTransformer.mm; sourceTree = "<group>"; };
 		70703F3622AD7633002C760A /* DiskArbitration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DiskArbitration.framework; path = System/Library/Frameworks/DiskArbitration.framework; sourceTree = SDKROOT; };
 		70703F3822AD7A16002C760A /* IDDiskArbitrationUtils.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = IDDiskArbitrationUtils.cpp; path = InvariantDisks/IDDiskArbitrationUtils.cpp; sourceTree = "<group>"; };
 		7072697B22EDB2BE002C760A /* ZetaCPPUtils.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = ZetaCPPUtils.hpp; sourceTree = "<group>"; };
-		708112BA26D993F4002C760A /* libzpool.5.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libzpool.5.dylib; path = ../../../../usr/local/zfs/lib/libzpool.5.dylib; sourceTree = "<group>"; };
+		708112BA26D993F4002C760A /* libzpool.6.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libzpool.6.dylib; path = ../../../../usr/local/zfs/lib/libzpool.6.dylib; sourceTree = "<group>"; };
 		7099FB4323A575F8002C760A /* ZetaBookmarkMenu.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ZetaBookmarkMenu.mm; sourceTree = "<group>"; };
 		7099FB4423A575F8002C760A /* ZetaBookmarkMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZetaBookmarkMenu.h; sourceTree = "<group>"; };
 		709C1CAC1C354F8B00929DAE /* ZetaPoolWatcher.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ZetaPoolWatcher.mm; sourceTree = "<group>"; };
@@ -243,7 +243,7 @@
 				703B176C262C6B0F002C760A /* libnvpair.3.dylib in Frameworks */,
 				703B176D262C6B0F002C760A /* libzfs_core.3.dylib in Frameworks */,
 				703B176E262C6B0F002C760A /* libzfs.4.dylib in Frameworks */,
-				70552BC82336B196002C760A /* Sparkle.framework in Frameworks */,
+
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -439,7 +439,7 @@
 				703B1752262C6A31002C760A /* libnvpair.3.dylib */,
 				703B1751262C6A31002C760A /* libzfs_core.3.dylib */,
 				703B1750262C6A31002C760A /* libzfs.4.dylib */,
-				70552BC42336AEB2002C760A /* Sparkle.framework */,
+
 				703811A32312C833002C760A /* ServiceManagement.framework */,
 				70703F3622AD7633002C760A /* DiskArbitration.framework */,
 			);
@@ -603,12 +603,12 @@
 		7006C4731C26CA1400929DAE /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1130;
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1640;
 				ORGANIZATIONNAME = "the-color-black.net";
 				TargetAttributes = {
 					7006C47A1C26CA1400929DAE = {
 						CreatedOnToolsVersion = 7.2;
-						DevelopmentTeam = 8THUW5GT6P;
 						ProvisioningStyle = Manual;
 					};
 					7018763C20E7B44800BA39B8 = {
@@ -623,7 +623,6 @@
 					};
 					70E4A21C236DF7D6002C760A = {
 						CreatedOnToolsVersion = 10.1;
-						DevelopmentTeam = 8THUW5GT6P;
 						ProvisioningStyle = Manual;
 						SystemCapabilities = {
 							com.apple.Sandbox = {
@@ -633,7 +632,6 @@
 					};
 					70EABDC91FF9ACB300BA39B8 = {
 						CreatedOnToolsVersion = 9.2;
-						DevelopmentTeam = 8THUW5GT6P;
 						ProvisioningStyle = Manual;
 					};
 				};
@@ -826,7 +824,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = x86_64;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -845,6 +842,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -853,11 +851,13 @@
 				CODE_SIGN_ENTITLEMENTS = ZetaWatch/ZetaWatch.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = 8THUW5GT6P;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -885,7 +885,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = x86_64;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -904,6 +903,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -912,11 +912,13 @@
 				CODE_SIGN_ENTITLEMENTS = ZetaWatch/ZetaWatch.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 8THUW5GT6P;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -937,21 +939,30 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "Developer ID Application";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				COMBINE_HIDPI_IMAGES = YES;
+				DEAD_CODE_STRIPPING = YES;
+				"DEVELOPMENT_TEAM[sdk=macosx*]" = "";
+				ENABLE_HARDENED_RUNTIME = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
-					"$(PROJECT_DIR)/ThirdParty/Sparkle/DerivedData/Sparkle/Build/Products/Release/",
+
 				);
 				INFOPLIST_FILE = ZetaWatch/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					/usr/local/zfs/lib,
 				);
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "net.the-color-black.ZetaWatch";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
 			};
 			name = Debug;
 		};
@@ -959,21 +970,30 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_IDENTITY = "Developer ID Application";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				COMBINE_HIDPI_IMAGES = YES;
+				DEAD_CODE_STRIPPING = YES;
+				"DEVELOPMENT_TEAM[sdk=macosx*]" = "";
+				ENABLE_HARDENED_RUNTIME = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
-					"$(PROJECT_DIR)/ThirdParty/Sparkle/DerivedData/Sparkle/Build/Products/Release/",
+
 				);
 				INFOPLIST_FILE = ZetaWatch/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					/usr/local/zfs/lib,
 				);
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "net.the-color-black.ZetaWatch";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
 			};
 			name = Release;
 		};
@@ -987,6 +1007,7 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				DEAD_CODE_STRIPPING = YES;
 				EXECUTABLE_PREFIX = lib;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				"GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS[arch=*]" = (
@@ -1001,6 +1022,7 @@
 					"$(ZFS_DIR)/include/libspl/os/macos",
 				);
 				LIBRARY_SEARCH_PATHS = "$(ZFS_DIR)/lib";
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 			};
@@ -1016,6 +1038,7 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				DEAD_CODE_STRIPPING = YES;
 				EXECUTABLE_PREFIX = lib;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				"GCC_PREPROCESSOR_DEFINITIONS_NOT_USED_IN_PRECOMPS[arch=*]" = (
@@ -1030,6 +1053,7 @@
 					"$(ZFS_DIR)/include/libspl/os/macos",
 				);
 				LIBRARY_SEARCH_PATHS = "$(ZFS_DIR)/lib";
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 			};
@@ -1038,13 +1062,15 @@
 		70D85FEC1C316E8F00929DAE /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "Developer ID Application";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_MODULE_VERIFIER = YES;
 				FRAMEWORK_VERSION = A;
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				HEADER_SEARCH_PATHS = (
@@ -1055,8 +1081,14 @@
 				);
 				INFOPLIST_FILE = ZFSWrapper/misc/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
 				LIBRARY_SEARCH_PATHS = "$(ZFS_DIR)/lib";
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu99 gnu++17";
 				PRODUCT_BUNDLE_IDENTIFIER = "net.the-color-black.ZFSWrapper";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1068,13 +1100,15 @@
 		70D85FED1C316E8F00929DAE /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = "Developer ID Application";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_MODULE_VERIFIER = YES;
 				FRAMEWORK_VERSION = A;
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				HEADER_SEARCH_PATHS = (
@@ -1085,8 +1119,14 @@
 				);
 				INFOPLIST_FILE = ZFSWrapper/misc/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
 				LIBRARY_SEARCH_PATHS = "$(ZFS_DIR)/lib";
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu99 gnu++17";
 				PRODUCT_BUNDLE_IDENTIFIER = "net.the-color-black.ZFSWrapper";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1103,12 +1143,20 @@
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_IDENTITY = "Developer ID Application";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				COMBINE_HIDPI_IMAGES = YES;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = 8THUW5GT6P;
+				"DEVELOPMENT_TEAM[sdk=macosx*]" = "";
+				ENABLE_HARDENED_RUNTIME = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = ZetaLoginItemHelper/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "net.the-color-black.ZetaLoginItemHelper";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1124,12 +1172,20 @@
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_IDENTITY = "Developer ID Application";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				COMBINE_HIDPI_IMAGES = YES;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = 8THUW5GT6P;
+				"DEVELOPMENT_TEAM[sdk=macosx*]" = "";
+				ENABLE_HARDENED_RUNTIME = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = ZetaLoginItemHelper/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "net.the-color-black.ZetaLoginItemHelper";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -1152,11 +1208,16 @@
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_IDENTITY = "Developer ID Application";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CREATE_INFOPLIST_SECTION_IN_BINARY = YES;
+				DEAD_CODE_STRIPPING = YES;
+				"DEVELOPMENT_TEAM[sdk=macosx*]" = "";
+				ENABLE_HARDENED_RUNTIME = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = "$(SRCROOT)/ZetaAuthorizationHelper/Info.plist";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				OTHER_LDFLAGS = (
 					"-sectcreate",
 					__TEXT,
@@ -1184,11 +1245,16 @@
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_IDENTITY = "Developer ID Application";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "-";
 				CREATE_INFOPLIST_SECTION_IN_BINARY = YES;
+				DEAD_CODE_STRIPPING = YES;
+				"DEVELOPMENT_TEAM[sdk=macosx*]" = "";
+				ENABLE_HARDENED_RUNTIME = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = "$(SRCROOT)/ZetaAuthorizationHelper/Info.plist";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				OTHER_LDFLAGS = (
 					"-sectcreate",
 					__TEXT,

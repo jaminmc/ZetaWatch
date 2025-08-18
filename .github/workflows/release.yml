@@ -1,0 +1,313 @@
+name: Release Build
+
+on:
+  release:
+    types: [created]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version (e.g., v1.0.0)'
+        required: true
+        type: string
+
+env:
+  BUILD_CONFIGURATION: Release
+  XCODE_PROJECT: ZetaWatch.xcodeproj
+  SCHEME: ZetaWatch
+
+jobs:
+  release-build:
+    name: Release Build ${{ matrix.arch }}
+    runs-on: ${{ matrix.os }}
+    
+    strategy:
+      matrix:
+        include:
+          - arch: Intel
+            os: macos-13
+            xcode_arch: x86_64
+            suffix: intel
+          - arch: Apple-Silicon  
+            os: macos-14
+            xcode_arch: arm64
+            suffix: apple-silicon
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+    
+    - name: Setup Xcode
+      uses: maxim-lobanov/setup-xcode@v1
+      with:
+        xcode-version: latest-stable
+    
+    - name: Import Code-Signing Certificates
+      if: ${{ env.DEVELOPER_ID_APPLICATION_CERTIFICATE != '' }}
+      env:
+        DEVELOPER_ID_APPLICATION_CERTIFICATE: ${{ secrets.DEVELOPER_ID_APPLICATION_CERTIFICATE }}
+        DEVELOPER_ID_APPLICATION_PRIVATE_KEY: ${{ secrets.DEVELOPER_ID_APPLICATION_PRIVATE_KEY }}
+        DEVELOPER_ID_INSTALLER_CERTIFICATE: ${{ secrets.DEVELOPER_ID_INSTALLER_CERTIFICATE }}
+        DEVELOPER_ID_INSTALLER_PRIVATE_KEY: ${{ secrets.DEVELOPER_ID_INSTALLER_PRIVATE_KEY }}
+        KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
+      run: |
+        # Create keychain
+        security create-keychain -p "$KEYCHAIN_PASSWORD" build.keychain
+        security default-keychain -s build.keychain
+        security unlock-keychain -p "$KEYCHAIN_PASSWORD" build.keychain
+        
+        # Import certificates
+        echo "$DEVELOPER_ID_APPLICATION_CERTIFICATE" | base64 --decode > app_cert.p12
+        echo "$DEVELOPER_ID_APPLICATION_PRIVATE_KEY" | base64 --decode > app_key.p12
+        
+        security import app_cert.p12 -k build.keychain -P "" -T /usr/bin/codesign
+        security import app_key.p12 -k build.keychain -P "" -T /usr/bin/codesign
+        
+        if [ -n "$DEVELOPER_ID_INSTALLER_CERTIFICATE" ]; then
+          echo "$DEVELOPER_ID_INSTALLER_CERTIFICATE" | base64 --decode > installer_cert.p12
+          echo "$DEVELOPER_ID_INSTALLER_PRIVATE_KEY" | base64 --decode > installer_key.p12
+          security import installer_cert.p12 -k build.keychain -P "" -T /usr/bin/codesign
+          security import installer_key.p12 -k build.keychain -P "" -T /usr/bin/codesign
+        fi
+        
+        security set-key-partition-list -S apple-tool:,apple: -s -k "$KEYCHAIN_PASSWORD" build.keychain
+        
+        # Clean up certificate files
+        rm -f *.p12
+    
+    - name: Install OpenZFS via Homebrew
+      run: |
+        echo "Installing OpenZFS ${{ matrix.arch }} via Homebrew..."
+        
+        # Use our installation script
+        ./.github/scripts/install-openzfs.sh ${{ matrix.xcode_arch }}
+    
+    - name: Verify ZFS installation
+      run: |
+        echo "Verifying OpenZFS installation..."
+        
+        # Find ZFS libraries in common locations
+        for dir in /usr/local/zfs/lib /usr/local/lib /opt/homebrew/lib; do
+          if [ -d "$dir" ]; then
+            echo "Checking $dir..."
+            ls -la "$dir"/lib*zfs*.dylib "$dir"/lib*nvpair*.dylib 2>/dev/null || true
+          fi
+        done
+        
+        # Show specific file info if found
+        for lib_path in /usr/local/zfs/lib/libzfs.6.dylib /usr/local/lib/libzfs.6.dylib /opt/homebrew/lib/libzfs.6.dylib; do
+          if [ -f "$lib_path" ]; then
+            echo "Found: $lib_path"
+            file "$lib_path"
+            break
+          fi
+        done
+    
+
+    
+    - name: Update version information
+      if: github.event.inputs.version != ''
+      run: |
+        VERSION="${{ github.event.inputs.version }}"
+        VERSION_NUMBER="${VERSION#v}"  # Remove 'v' prefix if present
+        
+        # Update Info.plist with version
+        /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $VERSION_NUMBER" ZetaWatch/Info.plist
+        /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $VERSION_NUMBER" ZetaWatch/Info.plist
+        
+        echo "✅ Updated version to $VERSION_NUMBER"
+    
+    - name: Build ZetaWatch
+      env:
+        CODE_SIGN_IDENTITY: ${{ secrets.DEVELOPER_ID_APPLICATION_CERTIFICATE != '' && 'Developer ID Application' || '' }}
+      run: |
+        set -e
+        
+        # Determine signing settings
+        if [ -n "$CODE_SIGN_IDENTITY" ]; then
+          SIGNING_ARGS=""
+          echo "✅ Code signing enabled"
+        else
+          SIGNING_ARGS="CODE_SIGN_IDENTITY='' CODE_SIGNING_REQUIRED=NO"
+          echo "⚠️  Code signing disabled (no certificates provided)"
+        fi
+        
+        # Build the application
+        xcodebuild build \
+          -project "$XCODE_PROJECT" \
+          -scheme "$SCHEME" \
+          -configuration "$BUILD_CONFIGURATION" \
+          -arch "${{ matrix.xcode_arch }}" \
+          ONLY_ACTIVE_ARCH=NO \
+          $SIGNING_ARGS \
+          -quiet
+        
+        echo "✅ Build completed successfully"
+    
+    - name: Notarize application
+      if: ${{ env.NOTARIZATION_USERNAME != '' }}
+      env:
+        NOTARIZATION_USERNAME: ${{ secrets.NOTARIZATION_USERNAME }}
+        NOTARIZATION_PASSWORD: ${{ secrets.NOTARIZATION_PASSWORD }}
+        NOTARIZATION_TEAM_ID: ${{ secrets.NOTARIZATION_TEAM_ID }}
+      run: |
+        APP_PATH=$(find build -name "ZetaWatch.app" -type d | head -1)
+        
+        if [ -z "$APP_PATH" ]; then
+          echo "❌ App not found for notarization"
+          exit 1
+        fi
+        
+        # Create zip for notarization
+        zip -r "ZetaWatch-${{ matrix.suffix }}-temp.zip" "$APP_PATH"
+        
+        # Submit for notarization
+        xcrun notarytool submit "ZetaWatch-${{ matrix.suffix }}-temp.zip" \
+          --apple-id "$NOTARIZATION_USERNAME" \
+          --password "$NOTARIZATION_PASSWORD" \
+          --team-id "$NOTARIZATION_TEAM_ID" \
+          --wait
+        
+        # Staple the notarization
+        xcrun stapler staple "$APP_PATH"
+        
+        rm "ZetaWatch-${{ matrix.suffix }}-temp.zip"
+        echo "✅ Notarization completed"
+    
+    - name: Create distribution package
+      run: |
+        # Find the built app
+        APP_PATH=$(find build -name "ZetaWatch.app" -type d | head -1)
+        
+        if [ -z "$APP_PATH" ]; then
+          echo "❌ ZetaWatch.app not found"
+          exit 1
+        fi
+        
+        # Create release directory
+        mkdir -p release
+        
+        # Determine version for filename
+        if [ -n "${{ github.event.inputs.version }}" ]; then
+          VERSION="${{ github.event.inputs.version }}"
+        elif [ -n "${{ github.event.release.tag_name }}" ]; then
+          VERSION="${{ github.event.release.tag_name }}"
+        else
+          VERSION="$(date +%Y%m%d)-${{ github.sha }}"
+        fi
+        
+        # Create final app bundle name
+        FINAL_APP_NAME="ZetaWatch-${VERSION}-${{ matrix.suffix }}.app"
+        FINAL_ZIP_NAME="ZetaWatch-${VERSION}-${{ matrix.suffix }}.zip"
+        
+        # Copy and rename app
+        cp -R "$APP_PATH" "release/$FINAL_APP_NAME"
+        
+        # Create zip
+        cd release
+        zip -r "$FINAL_ZIP_NAME" "$FINAL_APP_NAME"
+        
+        # Create checksum
+        shasum -a 256 "$FINAL_ZIP_NAME" > "${FINAL_ZIP_NAME}.sha256"
+        
+        # Show file info
+        ls -la
+        file "$FINAL_APP_NAME/Contents/MacOS/ZetaWatch"
+        
+        echo "✅ Created release package: $FINAL_ZIP_NAME"
+    
+    - name: Upload release artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: ZetaWatch-Release-${{ matrix.arch }}
+        path: release/
+        retention-days: 90
+    
+    - name: Upload to release (if release event)
+      if: github.event_name == 'release'
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        cd release
+        
+        # Upload all files to the release
+        for file in *.zip *.sha256; do
+          if [ -f "$file" ]; then
+            echo "Uploading $file..."
+            gh release upload ${{ github.event.release.tag_name }} "$file"
+          fi
+        done
+
+  create-combined-release:
+    name: Create Combined Release
+    needs: release-build
+    runs-on: macos-14
+    if: always() && (needs.release-build.result == 'success')
+    
+    steps:
+    - name: Download Intel artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: ZetaWatch-Release-Intel
+        path: intel/
+    
+    - name: Download Apple Silicon artifacts  
+      uses: actions/download-artifact@v4
+      with:
+        name: ZetaWatch-Release-Apple-Silicon
+        path: apple-silicon/
+    
+    - name: Create universal release package
+      run: |
+        mkdir -p universal-release
+        
+        # Copy all artifacts
+        cp intel/* universal-release/ 2>/dev/null || true
+        cp apple-silicon/* universal-release/ 2>/dev/null || true
+        
+        # Create release information
+        cat > universal-release/README.md << EOF
+        # ZetaWatch Universal Release
+        
+        This release contains builds for both Intel and Apple Silicon Macs.
+        
+        ## Downloads
+        
+        Choose the appropriate version for your Mac:
+        
+        - **Intel Macs**: Download the file containing \`intel\` in the name
+        - **Apple Silicon Macs** (M1/M2/M3): Download the file containing \`apple-silicon\` in the name
+        
+        ## Installation
+        
+        1. Download the appropriate .zip file for your Mac architecture
+        2. Extract the .zip file
+        3. Move ZetaWatch.app to your Applications folder
+        4. Right-click and "Open" the first time to bypass Gatekeeper (if unsigned)
+        
+        ## Requirements
+        
+        - macOS 11.0 or later
+        - OpenZFS installed on your system
+        
+        ## Verification
+        
+        Each release includes SHA256 checksums for verification:
+        
+        \`\`\`bash
+        shasum -a 256 -c *.sha256
+        \`\`\`
+        
+        Built on: $(date)
+        Commit: ${{ github.sha }}
+        EOF
+        
+        ls -la universal-release/
+    
+    - name: Upload combined release
+      uses: actions/upload-artifact@v4
+      with:
+        name: ZetaWatch-Universal-Release
+        path: universal-release/
+        retention-days: 90
