@@ -1,0 +1,210 @@
+name: Build ZetaWatch
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+env:
+  # Build settings
+  BUILD_CONFIGURATION: Release
+  XCODE_PROJECT: ZetaWatch.xcodeproj
+  SCHEME: ZetaWatch
+
+jobs:
+  build:
+    name: Build ${{ matrix.arch }}
+    runs-on: ${{ matrix.os }}
+    
+    strategy:
+      matrix:
+        include:
+          - arch: Intel
+            os: macos-13  # Intel-based runner
+            xcode_arch: x86_64
+            runner_arch: x86_64
+          - arch: Apple-Silicon
+            os: macos-14  # Apple Silicon runner
+            xcode_arch: arm64
+            runner_arch: arm64
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+    
+    - name: Setup Xcode
+      uses: maxim-lobanov/setup-xcode@v1
+      with:
+        xcode-version: latest-stable
+    
+    - name: Show build environment
+      run: |
+        echo "Building for: ${{ matrix.arch }}"
+        echo "Runner OS: ${{ matrix.os }}"
+        echo "Target architecture: ${{ matrix.xcode_arch }}"
+        echo "Runner architecture: ${{ matrix.runner_arch }}"
+        uname -m
+        xcodebuild -version
+        xcodebuild -showsdks
+    
+    - name: Cache OpenZFS libraries
+      uses: actions/cache@v4
+      id: cache-openzfs
+      with:
+        path: /usr/local/zfs
+        key: openzfs-2.3.0-${{ matrix.xcode_arch }}-${{ runner.os }}
+        restore-keys: |
+          openzfs-2.3.0-${{ matrix.xcode_arch }}-
+    
+    - name: Install ZFS dependencies
+      if: steps.cache-openzfs.outputs.cache-hit != 'true'
+      run: |
+        echo "Installing OpenZFS ${{ matrix.arch }} from openzfsonosx fork..."
+        
+        # Use our installation script
+        ./.github/scripts/install-openzfs.sh ${{ matrix.xcode_arch }}
+    
+    - name: Verify ZFS installation
+      run: |
+        echo "Verifying OpenZFS installation..."
+        ls -la /usr/local/zfs/lib/
+        file /usr/local/zfs/lib/libzfs.6.dylib
+    
+    - name: Download and setup Sparkle
+      run: |
+        cd ThirdParty/Sparkle
+        
+        # Download Sparkle (universal binary with both architectures)
+        curl -L -o Sparkle-2.7.1.tar.xz "https://github.com/sparkle-project/Sparkle/releases/download/2.7.1/Sparkle-2.7.1.tar.xz"
+        tar -xf Sparkle-2.7.1.tar.xz
+        
+        # Create expected directory structure
+        mkdir -p DerivedData/Sparkle/Build/Products/Release
+        cp -R Sparkle.framework DerivedData/Sparkle/Build/Products/Release/
+        
+        # Verify architecture support
+        lipo -info Sparkle.framework/Sparkle
+    
+    - name: Build ZetaWatch
+      run: |
+        set -e
+        
+        # Clean any previous builds
+        xcodebuild clean \
+          -project "$XCODE_PROJECT" \
+          -scheme "$SCHEME" \
+          -configuration "$BUILD_CONFIGURATION"
+        
+        # Build for specific architecture
+        xcodebuild build \
+          -project "$XCODE_PROJECT" \
+          -scheme "$SCHEME" \
+          -configuration "$BUILD_CONFIGURATION" \
+          -arch "${{ matrix.xcode_arch }}" \
+          ONLY_ACTIVE_ARCH=NO \
+          CODE_SIGN_IDENTITY="" \
+          CODE_SIGNING_REQUIRED=NO \
+          -quiet
+    
+    - name: Create app bundle
+      run: |
+        # Find the built app
+        APP_PATH=$(find build -name "ZetaWatch.app" -type d | head -1)
+        
+        if [ -z "$APP_PATH" ]; then
+          echo "❌ ZetaWatch.app not found"
+          find build -name "*.app" -type d
+          exit 1
+        fi
+        
+        echo "✅ Found app at: $APP_PATH"
+        
+        # Create artifacts directory
+        mkdir -p artifacts
+        
+        # Copy app bundle
+        cp -R "$APP_PATH" "artifacts/ZetaWatch-${{ matrix.arch }}.app"
+        
+        # Create zip for easier distribution
+        cd artifacts
+        zip -r "ZetaWatch-${{ matrix.arch }}.zip" "ZetaWatch-${{ matrix.arch }}.app"
+        
+        # Show app info
+        file "ZetaWatch-${{ matrix.arch }}.app/Contents/MacOS/ZetaWatch"
+        ls -la
+    
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: ZetaWatch-${{ matrix.arch }}
+        path: |
+          artifacts/ZetaWatch-${{ matrix.arch }}.zip
+          artifacts/ZetaWatch-${{ matrix.arch }}.app
+        retention-days: 30
+    
+    - name: Upload build logs on failure
+      if: failure()
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-logs-${{ matrix.arch }}
+        path: |
+          build/
+          DerivedData/
+        retention-days: 7
+
+  # Job to create a combined release (optional)
+  create-release:
+    name: Create Combined Release
+    needs: build
+    runs-on: macos-14
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+    
+    steps:
+    - name: Download Intel build
+      uses: actions/download-artifact@v4
+      with:
+        name: ZetaWatch-Intel
+        path: intel/
+    
+    - name: Download Apple Silicon build
+      uses: actions/download-artifact@v4
+      with:
+        name: ZetaWatch-Apple-Silicon
+        path: apple-silicon/
+    
+    - name: Create universal binary (optional)
+      run: |
+        echo "Creating universal release package..."
+        mkdir -p universal-release
+        
+        # Copy both zip files to release directory
+        cp intel/ZetaWatch-Intel.zip universal-release/
+        cp apple-silicon/ZetaWatch-Apple-Silicon.zip universal-release/
+        
+        # Create a combined release notes
+        cat > universal-release/README.txt << EOF
+        ZetaWatch Universal Release
+        
+        This package contains separate builds for different Mac architectures:
+        
+        - ZetaWatch-Intel.zip: For Intel-based Macs (x86_64)
+        - ZetaWatch-Apple-Silicon.zip: For Apple Silicon Macs (ARM64/M1/M2/M3)
+        
+        Choose the appropriate version for your Mac architecture.
+        
+        Built on: $(date)
+        Commit: ${{ github.sha }}
+        EOF
+        
+        ls -la universal-release/
+    
+    - name: Upload universal release
+      uses: actions/upload-artifact@v4
+      with:
+        name: ZetaWatch-Universal-Release
+        path: universal-release/
+        retention-days: 90
