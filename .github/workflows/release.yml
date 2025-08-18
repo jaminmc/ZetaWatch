@@ -99,20 +99,7 @@ jobs:
         ls -la /usr/local/zfs/lib/
         file /usr/local/zfs/lib/libzfs.6.dylib
     
-    - name: Setup Sparkle Framework
-      run: |
-        cd ThirdParty/Sparkle
-        
-        # Download and extract Sparkle
-        curl -L -o Sparkle-2.7.1.tar.xz "https://github.com/sparkle-project/Sparkle/releases/download/2.7.1/Sparkle-2.7.1.tar.xz"
-        tar -xf Sparkle-2.7.1.tar.xz
-        
-        # Setup expected directory structure
-        mkdir -p DerivedData/Sparkle/Build/Products/Release
-        cp -R Sparkle.framework DerivedData/Sparkle/Build/Products/Release/
-        
-        echo "✅ Sparkle framework installed"
-        lipo -info Sparkle.framework/Sparkle
+
     
     - name: Update version information
       if: github.event.inputs.version != ''

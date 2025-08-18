@@ -133,7 +133,6 @@ Manual trigger:
 
 3. **Architecture Mismatch**
    - Ensure ZFS libraries match Xcode target architecture
-   - Verify Sparkle framework supports target architecture
 
 4. **Build Timeouts**
    - Large builds may timeout on free GitHub runners
@@ -147,7 +146,7 @@ Manual trigger:
      run: |
        uname -m
        file /usr/local/zfs/lib/*.dylib
-       lipo -info ThirdParty/Sparkle/Sparkle.framework/Sparkle
+       # Check ZFS library architecture
    ```
 
 2. **Validate Dependencies**
@@ -217,11 +216,11 @@ strategy:
 
 1. **Caching**
    ```yaml
-   - name: Cache Sparkle
-     uses: actions/cache@v3
+   - name: Cache OpenZFS libraries
+     uses: actions/cache@v4
      with:
-       path: ThirdParty/Sparkle/Sparkle.framework
-       key: sparkle-2.7.1-${{ runner.os }}
+       path: /usr/local/zfs
+       key: openzfs-2.3.0-${{ matrix.xcode_arch }}-${{ runner.os }}
    ```
 
 2. **Parallel Builds**

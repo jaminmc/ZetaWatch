@@ -43,28 +43,7 @@ detect_arch() {
     fi
 }
 
-# Function to setup Sparkle
-setup_sparkle() {
-    log_info "Setting up Sparkle framework..."
-    
-    cd ThirdParty/Sparkle
-    
-    if [ ! -f "Sparkle.framework/Sparkle" ]; then
-        log_info "Downloading Sparkle 2.7.1..."
-        curl -L -o Sparkle-2.7.1.tar.xz "https://github.com/sparkle-project/Sparkle/releases/download/2.7.1/Sparkle-2.7.1.tar.xz"
-        tar -xf Sparkle-2.7.1.tar.xz
-        rm -f Sparkle-2.7.1.tar.xz
-    fi
-    
-    # Setup expected directory structure
-    mkdir -p DerivedData/Sparkle/Build/Products/Release
-    cp -R Sparkle.framework DerivedData/Sparkle/Build/Products/Release/
-    
-    log_success "Sparkle framework ready"
-    lipo -info Sparkle.framework/Sparkle
-    
-    cd ../..
-}
+
 
 # Function to check ZFS dependencies
 check_zfs() {
@@ -228,8 +207,7 @@ main() {
     # Clean previous builds
     rm -rf build dist *.log
     
-    # Setup Sparkle
-    setup_sparkle
+
     
     # Check ZFS (continue even if missing - will fail during build with better error)
     check_zfs || log_warning "ZFS check failed - build may fail"

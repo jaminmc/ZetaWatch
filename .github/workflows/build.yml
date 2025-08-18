@@ -74,20 +74,7 @@ jobs:
         ls -la /usr/local/zfs/lib/
         file /usr/local/zfs/lib/libzfs.6.dylib
     
-    - name: Download and setup Sparkle
-      run: |
-        cd ThirdParty/Sparkle
-        
-        # Download Sparkle (universal binary with both architectures)
-        curl -L -o Sparkle-2.7.1.tar.xz "https://github.com/sparkle-project/Sparkle/releases/download/2.7.1/Sparkle-2.7.1.tar.xz"
-        tar -xf Sparkle-2.7.1.tar.xz
-        
-        # Create expected directory structure
-        mkdir -p DerivedData/Sparkle/Build/Products/Release
-        cp -R Sparkle.framework DerivedData/Sparkle/Build/Products/Release/
-        
-        # Verify architecture support
-        lipo -info Sparkle.framework/Sparkle
+
     
     - name: Build ZetaWatch
       run: |

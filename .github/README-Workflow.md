@@ -75,7 +75,6 @@ This directory contains the CI/CD configuration for building ZetaWatch for both 
 ## Dependencies
 
 ### Automatic
-- ✅ **Sparkle Framework** - Downloaded automatically (universal binary)
 - ✅ **OpenZFS Libraries** - Built automatically from [openzfsonosx fork](https://github.com/openzfsonosx/openzfs-fork/releases/tag/zfs-macOS-2.3.0)
 - ✅ **Xcode/Build Tools** - Provided by GitHub runners
 

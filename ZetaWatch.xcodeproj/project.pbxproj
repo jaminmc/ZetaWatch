@@ -31,8 +31,8 @@
 		703B176C262C6B0F002C760A /* libnvpair.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 703B1752262C6A31002C760A /* libnvpair.3.dylib */; };
 		703B176D262C6B0F002C760A /* libzfs_core.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 703B1751262C6A31002C760A /* libzfs_core.3.dylib */; };
 		703B176E262C6B0F002C760A /* libzfs.6.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 703B1750262C6A31002C760A /* libzfs.6.dylib */; };
-		70552BC62336AFD8002C760A /* Sparkle.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 70552BC42336AEB2002C760A /* Sparkle.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		70552BC82336B196002C760A /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 70552BC42336AEB2002C760A /* Sparkle.framework */; };
+
+
 		7068A94623ACFB0A002C760A /* NewVol.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7068A94423ACFB0A002C760A /* NewVol.xib */; };
 		7068A94823ACFBB1002C760A /* SizeTransformer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 7068A94723ACFBB1002C760A /* SizeTransformer.mm */; };
 		70703F3722AD7633002C760A /* DiskArbitration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 70703F3622AD7633002C760A /* DiskArbitration.framework */; };
@@ -117,7 +117,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				70552BC62336AFD8002C760A /* Sparkle.framework in Embed Frameworks */,
+
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -165,7 +165,7 @@
 		703B1750262C6A31002C760A /* libzfs.6.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libzfs.6.dylib; path = ../../../../usr/local/zfs/lib/libzfs.6.dylib; sourceTree = "<group>"; };
 		703B1751262C6A31002C760A /* libzfs_core.3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libzfs_core.3.dylib; path = ../../../../usr/local/zfs/lib/libzfs_core.3.dylib; sourceTree = "<group>"; };
 		703B1752262C6A31002C760A /* libnvpair.3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libnvpair.3.dylib; path = ../../../../usr/local/zfs/lib/libnvpair.3.dylib; sourceTree = "<group>"; };
-		70552BC42336AEB2002C760A /* Sparkle.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Sparkle.framework; path = ThirdParty/Sparkle/DerivedData/Sparkle/Build/Products/Release/Sparkle.framework; sourceTree = "<group>"; };
+
 		7068A94523ACFB0A002C760A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/NewVol.xib; sourceTree = "<group>"; };
 		7068A94723ACFBB1002C760A /* SizeTransformer.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = SizeTransformer.mm; sourceTree = "<group>"; };
 		70703F3622AD7633002C760A /* DiskArbitration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = DiskArbitration.framework; path = System/Library/Frameworks/DiskArbitration.framework; sourceTree = SDKROOT; };
@@ -243,7 +243,7 @@
 				703B176C262C6B0F002C760A /* libnvpair.3.dylib in Frameworks */,
 				703B176D262C6B0F002C760A /* libzfs_core.3.dylib in Frameworks */,
 				703B176E262C6B0F002C760A /* libzfs.4.dylib in Frameworks */,
-				70552BC82336B196002C760A /* Sparkle.framework in Frameworks */,
+
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -439,7 +439,7 @@
 				703B1752262C6A31002C760A /* libnvpair.3.dylib */,
 				703B1751262C6A31002C760A /* libzfs_core.3.dylib */,
 				703B1750262C6A31002C760A /* libzfs.4.dylib */,
-				70552BC42336AEB2002C760A /* Sparkle.framework */,
+
 				703811A32312C833002C760A /* ServiceManagement.framework */,
 				70703F3622AD7633002C760A /* DiskArbitration.framework */,
 			);
@@ -948,7 +948,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
-					"$(PROJECT_DIR)/ThirdParty/Sparkle/DerivedData/Sparkle/Build/Products/Release/",
+
 				);
 				INFOPLIST_FILE = ZetaWatch/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -979,7 +979,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
-					"$(PROJECT_DIR)/ThirdParty/Sparkle/DerivedData/Sparkle/Build/Products/Release/",
+
 				);
 				INFOPLIST_FILE = ZetaWatch/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
