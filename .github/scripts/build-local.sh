@@ -49,13 +49,28 @@ detect_arch() {
 check_zfs() {
     log_info "Checking ZFS dependencies..."
     
-    local zfs_lib_dir="/usr/local/zfs/lib"
+    # Check common locations for ZFS libraries
+    local possible_locations=(
+        "/usr/local/zfs/lib"
+        "/usr/local/lib"
+        "/opt/homebrew/lib"
+    )
     
-    if [ ! -d "$zfs_lib_dir" ]; then
-        log_warning "ZFS not found at $zfs_lib_dir"
+    local zfs_lib_dir=""
+    
+    # Find where ZFS libraries are located
+    for dir in "${possible_locations[@]}"; do
+        if [ -f "$dir/libzfs.dylib" ] || [ -f "$dir/libzfs.6.dylib" ]; then
+            zfs_lib_dir="$dir"
+            break
+        fi
+    done
+    
+    if [ -z "$zfs_lib_dir" ]; then
+        log_warning "ZFS libraries not found in common locations"
         
         # Offer to install OpenZFS
-        read -p "Would you like to install OpenZFS automatically? (y/N): " -n 1 -r
+        read -p "Would you like to install OpenZFS via Homebrew? (y/N): " -n 1 -r
         echo
         if [[ $REPLY =~ ^[Yy]$ ]]; then
             log_info "Installing OpenZFS..."
@@ -67,25 +82,29 @@ check_zfs() {
         fi
     fi
     
-    # Check for required libraries
-    local required_libs=("libzfs.6.dylib" "libzpool.6.dylib" "libzfs_core.3.dylib" "libnvpair.3.dylib")
+    # Check for required libraries (with flexible naming)
+    local required_libs=("libzfs" "libzpool" "libzfs_core" "libnvpair")
     local missing_libs=()
     
     for lib in "${required_libs[@]}"; do
-        if [ ! -f "$zfs_lib_dir/$lib" ]; then
+        local found=false
+        for ext in ".dylib" ".6.dylib" ".3.dylib"; do
+            if [ -f "$zfs_lib_dir/$lib$ext" ]; then
+                found=true
+                break
+            fi
+        done
+        if [ "$found" = false ]; then
             missing_libs+=("$lib")
         fi
     done
     
     if [ ${#missing_libs[@]} -eq 0 ]; then
-        log_success "All ZFS libraries found"
+        log_success "All ZFS libraries found in $zfs_lib_dir"
         
-        # Show architecture info
-        for lib in "${required_libs[@]}"; do
-            if [ -f "$zfs_lib_dir/$lib" ]; then
-                echo "  $lib: $(file "$zfs_lib_dir/$lib" | cut -d: -f2 | xargs)"
-            fi
-        done
+        # Show available libraries
+        echo "  Available libraries:"
+        ls -la "$zfs_lib_dir"/lib*zfs*.dylib "$zfs_lib_dir"/lib*nvpair*.dylib 2>/dev/null || true
         return 0
     else
         log_error "Missing ZFS libraries:"
@@ -94,7 +113,7 @@ check_zfs() {
         done
         
         # Offer to install/reinstall OpenZFS
-        read -p "Would you like to (re)install OpenZFS to fix missing libraries? (y/N): " -n 1 -r
+        read -p "Would you like to (re)install OpenZFS via Homebrew? (y/N): " -n 1 -r
         echo
         if [[ $REPLY =~ ^[Yy]$ ]]; then
             log_info "Installing OpenZFS..."

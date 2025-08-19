@@ -1,15 +1,12 @@
 #!/bin/bash
 
 # OpenZFS Installation Script for GitHub Actions
-# Downloads and builds OpenZFS macOS 2.3.0 for the target architecture
+# Installs OpenZFS using Homebrew cask
 
 set -e
 
 # Configuration
-OPENZFS_VERSION="zfs-macOS-2.3.0"
-OPENZFS_URL="https://github.com/openzfsonosx/openzfs-fork/archive/refs/tags/${OPENZFS_VERSION}.tar.gz"
 INSTALL_PREFIX="/usr/local/zfs"
-BUILD_JOBS="$(sysctl -n hw.logicalcpu)"
 
 # Colors
 RED='\033[0;31m'
@@ -40,211 +37,154 @@ detect_arch() {
     echo "$arch"
 }
 
-# Function to install dependencies
-install_dependencies() {
-    log_info "Installing build dependencies..."
+# Function to install OpenZFS via Homebrew
+install_openzfs_homebrew() {
+    log_info "Installing OpenZFS via Homebrew..."
     
-    # Install Xcode command line tools if not present
-    if ! command -v xcode-select >/dev/null 2>&1; then
-        log_info "Installing Xcode command line tools..."
-        xcode-select --install
-    fi
+    # Update Homebrew
+    brew update
     
-    # Install autotools via Homebrew if available
-    if command -v brew >/dev/null 2>&1; then
-        log_info "Installing build tools via Homebrew..."
-        brew install autoconf automake libtool
-    else
-        log_warning "Homebrew not available - ensure autotools are installed"
-    fi
+    # Install OpenZFS cask
+    log_info "Installing OpenZFS cask..."
+    brew install --cask openzfs
     
-    log_success "Dependencies installed"
+    log_success "OpenZFS cask installed successfully"
 }
 
-# Function to download OpenZFS source
-download_openzfs() {
-    log_info "Downloading OpenZFS ${OPENZFS_VERSION}..."
+# Function to verify OpenZFS installation
+verify_installation() {
+    log_info "Verifying OpenZFS installation..."
     
-    local temp_dir=$(mktemp -d)
-    cd "$temp_dir"
-    
-    curl -L -o "openzfs-${OPENZFS_VERSION}.tar.gz" "$OPENZFS_URL"
-    tar -xzf "openzfs-${OPENZFS_VERSION}.tar.gz"
-    
-    # Return the extracted directory path
-    echo "$temp_dir/openzfs-fork-${OPENZFS_VERSION}"
-}
-
-# Function to configure OpenZFS build
-configure_openzfs() {
-    local source_dir="$1"
-    local target_arch="$2"
-    
-    log_info "Configuring OpenZFS for ${target_arch}..."
-    
-    cd "$source_dir"
-    
-    # Generate configure script
-    ./autogen.sh
-    
-    # Configure for macOS with specific architecture
-    local configure_args=(
-        "--prefix=${INSTALL_PREFIX}"
-        "--with-config=user"
-        "--enable-systemd=no"
-        "--enable-sysvinit=no"
+    # Common locations for OpenZFS libraries
+    local possible_locations=(
+        "/usr/local/zfs/lib"
+        "/usr/local/lib"
+        "/opt/homebrew/lib"
     )
     
-    # Add architecture-specific flags
-    if [ "$target_arch" = "x86_64" ]; then
-        configure_args+=(
-            "CFLAGS=-arch x86_64"
-            "CXXFLAGS=-arch x86_64"
-            "LDFLAGS=-arch x86_64"
-        )
-    elif [ "$target_arch" = "arm64" ]; then
-        configure_args+=(
-            "CFLAGS=-arch arm64"
-            "CXXFLAGS=-arch arm64" 
-            "LDFLAGS=-arch arm64"
-        )
-    fi
+    local zfs_lib_dir=""
     
-    ./configure "${configure_args[@]}"
+    # Find where ZFS libraries are installed
+    for dir in "${possible_locations[@]}"; do
+        if [ -f "$dir/libzfs.dylib" ] || [ -f "$dir/libzfs.6.dylib" ]; then
+            zfs_lib_dir="$dir"
+            break
+        fi
+    done
     
-    log_success "OpenZFS configured for ${target_arch}"
-}
-
-# Function to build OpenZFS
-build_openzfs() {
-    local source_dir="$1"
-    local target_arch="$2"
-    
-    log_info "Building OpenZFS for ${target_arch}..."
-    
-    cd "$source_dir"
-    
-    # Build userland tools and libraries
-    make -j"$BUILD_JOBS"
-    
-    log_success "OpenZFS built successfully"
-}
-
-# Function to install OpenZFS
-install_openzfs() {
-    local source_dir="$1"
-    local target_arch="$2"
-    
-    log_info "Installing OpenZFS libraries..."
-    
-    cd "$source_dir"
-    
-    # Create installation directory
-    sudo mkdir -p "$INSTALL_PREFIX"/{lib,include,bin,sbin}
-    
-    # Install libraries and headers
-    sudo make install
-    
-    # Verify installation
-    if [ -f "${INSTALL_PREFIX}/lib/libzfs.dylib" ]; then
-        log_success "OpenZFS installed successfully"
-        
-        # Show installed libraries
-        log_info "Installed libraries:"
-        ls -la "${INSTALL_PREFIX}/lib/"*.dylib 2>/dev/null || true
-        
-        # Show architecture of installed libraries
-        for lib in "${INSTALL_PREFIX}/lib/"*.dylib; do
-            if [ -f "$lib" ]; then
-                echo "  $(basename "$lib"): $(file "$lib" | cut -d: -f2 | xargs)"
-            fi
-        done
-    else
-        log_error "OpenZFS installation failed"
+    if [ -z "$zfs_lib_dir" ]; then
+        log_error "Could not find ZFS libraries after installation"
+        log_info "Searching for ZFS libraries..."
+        find /usr/local /opt/homebrew -name "libzfs*.dylib" 2>/dev/null || true
         return 1
     fi
+    
+    log_success "Found ZFS libraries in: $zfs_lib_dir"
+    
+    # Show installed libraries
+    log_info "Available ZFS libraries:"
+    ls -la "$zfs_lib_dir"/lib*zfs*.dylib "$zfs_lib_dir"/lib*nvpair*.dylib 2>/dev/null || true
+    
+    # Check architecture
+    local test_lib="$zfs_lib_dir/libzfs.dylib"
+    if [ ! -f "$test_lib" ]; then
+        test_lib="$zfs_lib_dir/libzfs.6.dylib"
+    fi
+    
+    if [ -f "$test_lib" ]; then
+        log_info "Library architecture:"
+        file "$test_lib"
+        echo ""
+    fi
+    
+    return 0
 }
 
 # Function to create symbolic links for expected library versions
 create_library_links() {
-    log_info "Creating library version links..."
+    log_info "Creating library version links if needed..."
     
-    cd "${INSTALL_PREFIX}/lib"
+    # Find ZFS library directory
+    local zfs_lib_dir=""
+    local possible_locations=(
+        "/usr/local/zfs/lib"
+        "/usr/local/lib"
+        "/opt/homebrew/lib"
+    )
     
-    # Create links for the versions expected by ZetaWatch
-    sudo ln -sf libzfs.dylib libzfs.6.dylib 2>/dev/null || true
-    sudo ln -sf libzpool.dylib libzpool.6.dylib 2>/dev/null || true
-    sudo ln -sf libzfs_core.dylib libzfs_core.3.dylib 2>/dev/null || true
-    sudo ln -sf libnvpair.dylib libnvpair.3.dylib 2>/dev/null || true
+    for dir in "${possible_locations[@]}"; do
+        if [ -f "$dir/libzfs.dylib" ] || [ -f "$dir/libzfs.6.dylib" ]; then
+            zfs_lib_dir="$dir"
+            break
+        fi
+    done
     
-    log_success "Library links created"
-}
-
-# Function to cleanup temporary files
-cleanup() {
-    if [ -n "$1" ] && [ -d "$1" ]; then
-        log_info "Cleaning up temporary files..."
-        rm -rf "$1"
+    if [ -z "$zfs_lib_dir" ]; then
+        log_warning "Could not find ZFS library directory for link creation"
+        return 0
     fi
+    
+    cd "$zfs_lib_dir"
+    
+    # Create links for the versions expected by ZetaWatch (if they don't exist)
+    if [ -f "libzfs.dylib" ] && [ ! -f "libzfs.6.dylib" ]; then
+        ln -sf libzfs.dylib libzfs.6.dylib 2>/dev/null || true
+    fi
+    if [ -f "libzpool.dylib" ] && [ ! -f "libzpool.6.dylib" ]; then
+        ln -sf libzpool.dylib libzpool.6.dylib 2>/dev/null || true
+    fi
+    if [ -f "libzfs_core.dylib" ] && [ ! -f "libzfs_core.3.dylib" ]; then
+        ln -sf libzfs_core.dylib libzfs_core.3.dylib 2>/dev/null || true
+    fi
+    if [ -f "libnvpair.dylib" ] && [ ! -f "libnvpair.3.dylib" ]; then
+        ln -sf libnvpair.dylib libnvpair.3.dylib 2>/dev/null || true
+    fi
+    
+    log_success "Library links checked/created"
 }
 
 # Main installation function
 main() {
     local target_arch="${1:-$(detect_arch)}"
     
-    log_info "Installing OpenZFS ${OPENZFS_VERSION} for ${target_arch}"
-    log_info "Installation prefix: ${INSTALL_PREFIX}"
+    log_info "Installing OpenZFS via Homebrew for ${target_arch}"
     echo ""
     
-    # Trap cleanup on exit
-    local temp_dir=""
-    trap 'cleanup "$temp_dir"' EXIT
+    # Check if Homebrew is available
+    if ! command -v brew >/dev/null 2>&1; then
+        log_error "Homebrew is not installed. Please install Homebrew first."
+        exit 1
+    fi
     
-    # Install dependencies
-    install_dependencies
+    # Install OpenZFS via Homebrew
+    install_openzfs_homebrew
     
-    # Download source
-    temp_dir=$(download_openzfs)
+    # Verify installation
+    verify_installation
     
-    # Configure build
-    configure_openzfs "$temp_dir" "$target_arch"
-    
-    # Build OpenZFS
-    build_openzfs "$temp_dir" "$target_arch"
-    
-    # Install OpenZFS
-    install_openzfs "$temp_dir" "$target_arch"
-    
-    # Create library links
+    # Create library links if needed
     create_library_links
     
     echo ""
-    log_success "OpenZFS ${OPENZFS_VERSION} installation completed!"
-    log_info "Libraries installed in: ${INSTALL_PREFIX}/lib"
-    log_info "Headers installed in: ${INSTALL_PREFIX}/include"
-    
-    # Show final verification
-    if [ -f "${INSTALL_PREFIX}/lib/libzfs.6.dylib" ]; then
-        echo ""
-        log_info "Verification:"
-        file "${INSTALL_PREFIX}/lib/libzfs.6.dylib"
-        otool -L "${INSTALL_PREFIX}/lib/libzfs.6.dylib" | head -5
-    fi
+    log_success "OpenZFS installation completed via Homebrew!"
+    log_info "Use 'brew list --cask openzfs' to see installation details"
 }
 
 # Show usage if help requested
 if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
     echo "Usage: $0 [architecture]"
     echo ""
-    echo "Install OpenZFS macOS 2.3.0 for the specified architecture"
+    echo "Install OpenZFS via Homebrew cask"
     echo ""
     echo "Arguments:"
-    echo "  architecture    Target architecture (x86_64, arm64, or auto-detect)"
+    echo "  architecture    Target architecture (for logging purposes only)"
     echo ""
     echo "Examples:"
-    echo "  $0              # Auto-detect current architecture"
-    echo "  $0 x86_64       # Build for Intel"
-    echo "  $0 arm64        # Build for Apple Silicon"
+    echo "  $0              # Install OpenZFS via Homebrew"
+    echo "  $0 x86_64       # Install for Intel (same as above)"
+    echo "  $0 arm64        # Install for Apple Silicon (same as above)"
+    echo ""
+    echo "Note: Homebrew automatically installs the correct architecture"
     exit 0
 fi
 

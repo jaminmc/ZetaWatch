@@ -76,28 +76,33 @@ jobs:
         # Clean up certificate files
         rm -f *.p12
     
-    - name: Cache OpenZFS libraries
-      uses: actions/cache@v4
-      id: cache-openzfs
-      with:
-        path: /usr/local/zfs
-        key: openzfs-2.3.0-${{ matrix.xcode_arch }}-${{ runner.os }}
-        restore-keys: |
-          openzfs-2.3.0-${{ matrix.xcode_arch }}-
-    
-    - name: Install ZFS dependencies
-      if: steps.cache-openzfs.outputs.cache-hit != 'true'
+    - name: Install OpenZFS via Homebrew
       run: |
-        echo "Installing OpenZFS ${{ matrix.arch }} from openzfsonosx fork..."
+        echo "Installing OpenZFS ${{ matrix.arch }} via Homebrew..."
         
-        # Use our installation script to build and install OpenZFS
+        # Use our installation script
         ./.github/scripts/install-openzfs.sh ${{ matrix.xcode_arch }}
     
     - name: Verify ZFS installation
       run: |
         echo "Verifying OpenZFS installation..."
-        ls -la /usr/local/zfs/lib/
-        file /usr/local/zfs/lib/libzfs.6.dylib
+        
+        # Find ZFS libraries in common locations
+        for dir in /usr/local/zfs/lib /usr/local/lib /opt/homebrew/lib; do
+          if [ -d "$dir" ]; then
+            echo "Checking $dir..."
+            ls -la "$dir"/lib*zfs*.dylib "$dir"/lib*nvpair*.dylib 2>/dev/null || true
+          fi
+        done
+        
+        # Show specific file info if found
+        for lib_path in /usr/local/zfs/lib/libzfs.6.dylib /usr/local/lib/libzfs.6.dylib /opt/homebrew/lib/libzfs.6.dylib; do
+          if [ -f "$lib_path" ]; then
+            echo "Found: $lib_path"
+            file "$lib_path"
+            break
+          fi
+        done
     
 
     
